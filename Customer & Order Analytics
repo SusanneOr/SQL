@@ -1,7 +1,7 @@
 --Customer & Order Analytics Project
 --In this project, I´m querying a database with multiple tables in it to quantify statistics about customer and order data
 
---ow many orders were placed in January?
+--How many orders were placed in January?
 SELECT COUNT(orderID)
 FROM BIT_DB.JanSales
 WHERE length(orderID)=6
@@ -92,7 +92,7 @@ ON Feb.orderid=Cust.order_id
 WHERE length(orderid) = 6 
 AND orderid <> 'Order ID';
 
-#Which product brought in the most revenue in January and how much revenue did it bring in total?
+--Which product brought in the most revenue in January and how much revenue did it bring in total?
 SELECT SUM(quantity*price) AS Revenue, product
 FROM BIT_DB.JanSales Jan
 GROUP BY product
