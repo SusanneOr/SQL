@@ -29,7 +29,10 @@ ORDER BY total_revenue desc;
 
 # Show the top 2 products with the best revenue in February?
 
-SELECT product_name, sum(quantity_sold*price)AS total_revenue FROM Sales_Lingerie_Feb GROUP BY product_name LIMIT 2;
+SELECT product_name, sum(quantity_sold*price)AS total_revenue 
+FROM Sales_Lingerie_Feb 
+GROUP BY product_name 
+LIMIT 2;
 
 
 # Group products by performance
@@ -46,12 +49,18 @@ ORDER BY total_revenue desc
 
 
 # Which color is performing the best in each category? 
-SELECT category, color, quantity_sold FROM Sales_Lingerie_Feb GROUP BY color ORDER BY color;
+SELECT category, color, quantity_sold 
+FROM Sales_Lingerie_Feb 
+GROUP BY color, category 
+ORDER BY color;
 
 
 # Pick all the products in the color "white" where we had more than 40 sales in February
 
-SELECT * FROM Sales_Lingerie_Feb WHERE color= "White" AND quantity_sold>40; 
+SELECT * 
+FROM Sales_Lingerie_Feb 
+WHERE color= "White" 
+AND quantity_sold>40; 
 
 
 
