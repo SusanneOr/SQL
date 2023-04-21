@@ -12,30 +12,46 @@ CREATE TABLE Sales_Lingerie_Feb
 INSERT INTO 
 Sales_Lingerie_Feb 
 VALUES
-(1, "Lissi balconette", "Black", 101, 749, "Bra"),
-(2, "Lissi balconette", "White", 80, 749, "Bra"),
-(3, "Lissi balconette", "Pink", 30, 749, "Bra"),
+(1, "Lissi bra", "Black", 101, 749, "Bra"),
+(2, "Florence bra", "White", 80, 749, "Bra"),
+(3, "Lissi hipster", "White", 30, 299, "Brief"),
 (4, "Lissi hipster", "Black", 130, 299, "Brief"),
-(5, "Lissi hipster", "White", 50, 299, "Brief"),
-(6 , "Lissi hipster", "Pink", 70, 299, "Brief");
+(5, "Heidi socks", "White", 50, 99, "Socks"),
+(6 , "Heidi socks", "Black", 70, 99, "Socks");
 
 
-# What is the bestselling category in the store?
+#What is the total revenue of each category, and which category is performing the best?
+
 SELECT category, sum(quantity_sold*price)AS total_revenue
 FROM Sales_Lingerie_Feb
 GROUP BY category
 ORDER BY total_revenue desc;
 
-# Use CASE find out which products perform well and not
-SELECT product_name, quantity_sold,
-CASE
-WHEN quantity_sold >100 THEN "Performing well"
-WHEN quantity_sold BETWEEN 50 AND 100 THEN "Performing"
-ELSE "Not performing"
-END AS Performance
-FROM Sales_Lingerie_Feb
-ORDER BY Performance;
+# Show the top 2 products with the best revenue in February?
 
+SELECT product_name, sum(quantity_sold*price)AS total_revenue FROM Sales_Lingerie_Feb GROUP BY product_name LIMIT 2;
+
+
+# Group products by performance
+
+SELECT product_name, sum(quantity_sold*price)AS total_revenue, 
+CASE 
+WHEN sum(quantity_sold*price)> 50000 THEN "Performing well"
+WHEN sum(quantity_sold*price) BETWEEN 30000 AND 49999 THEN "Performing"
+ELSE "Not performing"
+END AS "Performance"
+FROM Sales_Lingerie_Feb GROUP BY product_name
+ORDER BY total_revenue desc
+;
+
+
+# Which color is performing the best in each category? 
+SELECT category, color, quantity_sold FROM Sales_Lingerie_Feb GROUP BY color ORDER BY color;
+
+
+# Pick all the products in the color "white" where we had more than 40 sales in February
+
+SELECT * FROM Sales_Lingerie_Feb WHERE color= "White" AND quantity_sold>40; 
 
 
 
