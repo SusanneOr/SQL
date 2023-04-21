@@ -1,0 +1,75 @@
+-- For this project, I createda table for actors and related tables, joining these relations to produce distinct record that were used to answer queries.
+
+CREATE TABLE Actors
+(id INTEGER PRIMARY KEY AUTOINCREMENT, full_name TEXT, age INTEGER, nationality TEXT);
+INSERT INTO Actors (id, full_name, age, nationality) VALUES (1,"Jennifer Aniston", 54, "USA");
+INSERT INTO Actors (id, full_name, age, nationality) VALUES (2,"Adam Sandler", 54, "USA");
+INSERT INTO Actors (id, full_name, age, nationality) VALUES (3,"Gemma Arterton", 37, "UK");
+INSERT INTO Actors (id, full_name, age, nationality) VALUES (4,"Julia Roberts", 55, "USA");
+INSERT INTO Actors (id, full_name, age, nationality) VALUES (5,"George Clooney", 61, "USA");
+INSERT INTO Actors (id, full_name, age, nationality) VALUES (6,"Drew Barrymore", 48, "USA");
+
+
+CREATE TABLE Movies
+(movie_id INTEGER, actor_id INTEGER, movie_name TEXT, genre TEXT);
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (1, 4 ,"Ticket to paradise", "comedy");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (1, 5 ,"Ticket to paradise", "comedy");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (2, 3 ,"Murder mystery", "drama");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (2, 2 ,"Murder mystery", "drama");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (2, 1 ,"Murder mystery", "cdrama");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (3, 6 ,"50 first dates", "comedy");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (3, 2 ,"50 first dates", "comedy");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (4, 1 ,"Wanderlust", "comedy");
+INSERT INTO Movies (movie_id, actor_id, movie_name, genre) VALUES (5, 2 ,"Click", "comedy");
+
+CREATE TABLE Ratings 
+(rating INTEGER, movie_id INTEGER, actor_id INTEGER);
+INSERT INTO Ratings (rating, movie_id) VALUES (6.8, 3);
+INSERT INTO Ratings (rating, movie_id) VALUES (6.0, 2);
+INSERT INTO Ratings (rating, movie_id) VALUES (6.1, 1);
+INSERT INTO Ratings (rating, movie_id) VALUES (5.6, 4);
+INSERT INTO Ratings (rating, movie_id) VALUES (6.4, 5);
+
+--Make a list of every actor and every movie they played in--
+SELECT a.full_name, m.movie_name AS Movie
+FROM Actors AS a
+JOIN movies AS m
+ON a.id=m.actor_id
+;
+
+-- Find the rating of each movie by joining table Movies with table Ratings-
+SELECT  m.movie_name AS Movie, r.rating AS 'Movie Rating'
+FROM Movies AS m
+JOIN Ratings AS r
+ON m.movie_id=r.movie_id
+GROUP BY movie
+ORDER BY rating desc
+;
+
+--Make a list of all the actors, and the average rating of the movies they have attended-
+SELECT a.full_name, AVG(r.rating) AS ' AVG Movie Rating'
+FROM Actors AS a
+JOIN Movies AS m
+ON a.id=m.actor_id
+JOIN Ratings AS r
+ON m.movie_id=r.movie_id
+GROUP BY a.full_name
+ORDER BY rating desc
+;
+
+--Make a list showing how many of the movies each actor has attended-
+SELECT a.full_name, COUNT(movie_id) AS 'Numb_Movies'
+FROM Movies AS m
+JOIN Actors AS A
+ON m.actor_id=a.id
+GROUP BY a.full_name
+ORDER BY Numb_Movies desc
+;
+
+--How many actors were in the movie called "50 first dates"?-
+SELECT COUNT(distinct a.id) AS 'Count Actors 50 first dates'
+FROM Actors AS a
+JOIN Movies AS m
+ON a.id=m.actor_id
+WHERE m.movie_name= "50 first dates";
+;
