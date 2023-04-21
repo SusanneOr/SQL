@@ -1,0 +1,31 @@
+# Make a list of TOP 10 countries with highest population
+
+SELECT name, population
+FROM countries
+ORDER BY population desc LIMIT 10;
+
+#Which countries have a high fertility rate (over 5) and a high denisty per sq/km?
+
+SELECT name, fertility_rate, density_per_sq_km
+FROM countries
+WHERE fertility_rate>5 AND density_per_sq_km>200
+GROUP BY fertility_rate, name
+ORDER BY fertility_Rate desc
+;
+
+# How many countries have a fertility rate over 4?
+SELECT COUNT(*)
+FROM countries
+WHERE fertility_rate>4;
+
+# To see if there is a connection between median age of each country and the fertility rate, I used CASE to group the median age, and quiered the avergage feritily_rate og each group. 
+SELECT COUNT(*), AVG(fertility_rate),
+CASE 
+WHEN median_age >40 THEN "Over 40"
+WHEN median_age >30 THEN "30-39"
+WHEN median_age > 20  THEN "20-29"
+ELSE "Below 20"
+END AS "Age_by_group"
+FROM countries
+GROUP BY Age_by_group
+;
