@@ -1,0 +1,125 @@
+In this project I used a dataset which represents a digital media store. The dataset includes tables for customers, artists, albums, media tracks and invoices.
+
+
+--Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country--
+
+SELECT cus.FirstName, cus.LastName, cus.Email, inv.InvoiceId, inv.InvoiceDate,inv.BillingCountry
+FROM customers cus
+LEFT JOIN invoices inv
+ON cus.CustomerId=inv.CustomerId
+WHERE cus.Country= "Brazil"
+;
+
+--Show the Employees who are Sales Agents--
+
+SELECT *
+FROM employees
+WHERE Title LIKE "Sales%";
+
+--Find a unique/distinct list of billing countries from the Invoice table--
+
+SELECT DISTINCT BillingCountry
+FROM invoices;
+
+--Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name--
+
+SELECT emp.FirstName, emp.LastName, inv.* 
+FROM employees emp
+JOIN customers cus
+ON emp.EmployeeID=cus.CustomerId
+JOIN invoices inv
+ON inv.CustomerID=cus.CustomerID;
+
+--Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers--
+
+SELECT inv.total, cus.FirstName, cus.LastName, emp.FirstName, emp.LastName
+FROM employees emp
+JOIN customers cus
+ON emp.EmployeeID=cus.CustomerId
+JOIN invoices inv
+ON inv.CustomerID=cus.CustomerID;
+
+--How many Invoices were there in 2009?--
+
+SELECT COUNT(InvoiceId)
+FROM invoices
+WHERE InvoiceDate LIKE "2009%";
+
+--What are the total sales for 2009?--
+
+SELECT SUM(Total)
+FROM invoices
+WHERE InvoiceDate LIKE "2009%";
+
+--Write a query that includes the purchased track name with each invoice line ID--
+
+SELECT tra.Name, invi.InvoiceLineId
+FROM invoice_items invi
+JOIN tracks tra
+ON invi.TrackId=tra.TrackId;
+
+--Write a query that includes the purchased track name AND artist name with each invoice line ID--
+
+SELECT invi.InvoiceLineId, tra.Name AS TrackName,art.Name AS ArtistName
+FROM invoice_items invi
+LEFT JOIN tracks tra
+ON invi.TrackId=tra.TrackId
+INNER JOIN albums alb
+ON tra.AlbumID=alb.AlbumId
+LEFT JOIN artists art
+ON alb.ArtistId=art.ArtistId;
+
+-- Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre-- 
+
+SELECT tra.Name AS TrackName, alb.Title AS AlbumName, med.Name AS MediaName, gen.Name AS Genre
+FROM tracks tra
+JOIN albums alb
+ON tra.AlbumID=alb.AlbumID
+JOIN genres gen
+ON gen.GenreId=tra.GenreID
+JOIN media_types med
+ON med.MediaTypeId=tra.MediaTypeId;
+
+-- Show the total sales made by each sales agent--
+
+SELECT emp.FirstName, emp.EmployeeId, ROUND(SUM(Inv.Total), 2) as 'Total Sales'
+FROM invoices inv
+JOIN customers cus
+ON inv.CustomerId=cus.CustomerId
+JOIN employees emp
+ON emp.EmployeeId=SupportRepId
+WHERE emp.Title = 'Sales Support Agent' 
+GROUP BY emp.FirstName;
+
+-- Which sales agent made the most dollars in sales in 2009?-- 
+
+SELECT emp.FirstName, emp.EmployeeId, ROUND(SUM(Inv.Total), 2) as 'Total Sales'
+FROM invoices inv
+JOIN customers cus
+ON inv.CustomerId=cus.CustomerId
+JOIN employees emp
+ON emp.EmployeeId=SupportRepId
+WHERE emp.Title = 'Sales Support Agent'
+AND inv.InvoiceDate LIKE "2009%" 
+GROUP BY emp.FirstName
+ORDER BY (round(sum(Inv.Total), 2))  DESC LIMIT 1;
+
+
+-- Who is our best customer--
+
+SELECT inv.CustomerId,cus.FirstName, cus.LastName, cus.Email, SUM(inv.Total)
+FROM invoices inv
+LEFT JOIN customers cus
+ON inv.CustomerId=cus.CustomerId
+GROUP BY inv.CustomerId
+ORDER BY SUM(Total) desc
+LIMIT 10;
+
+-- Which song was most popular?-- 
+
+SELECT inv.TrackID, tra.Name, SUM(inv.UnitPrice*inv.Quantity) AS revenue
+FROM invoice_items inv
+JOIN tracks tra
+ON inv.TrackId=tra.TrackId
+GROUP BY inv.TrackId
+Order BY SUM(inv.UnitPrice*inv.Quantity) desc;
