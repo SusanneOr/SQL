@@ -123,3 +123,35 @@ JOIN tracks tra
 ON inv.TrackId=tra.TrackId
 GROUP BY inv.TrackId
 Order BY SUM(inv.UnitPrice*inv.Quantity) desc;
+
+--Find which state in the United States has the least purchased tracks from the Rock And Roll genre in order to identify which state we should promote Rock And Roll in to increase sales. ELECT cust.state, SUM(items.trackid) * quantity AS 'Total Tracks Purchased' 
+ 
+SELECT cust.state, SUM(items.trackid) * quantity AS 'Total Tracks Purchased' 
+ FROM chinook.customers cust 
+ JOIN chinook.invoices inv 
+ ON cust.customerid = inv.customerid 
+ JOIN chinook.invoice_items items 
+ ON inv.invoiceid = items.invoiceid 
+ JOIN chinook.tracks tracks 
+ ON items.trackid = tracks.trackid 
+ JOIN chinook.genres gen 
+ ON tracks.genreid = gen.genreid 
+ WHERE gen.name = 'Rock And Roll' 
+ GROUP BY cust.state
+ ORDER BY SUM(items.trackid) * quantity ASC
+ LIMIT 1
+ ;
+ 
+--Show how many tracks are in each genre and include the percentage of tracks in each genre.
+
+SELECT gen.name, COUNT(tracks.trackid) AS NumTracks, COUNT(tracks.trackid)/CAST(
+(
+SELECT COUNT(tracks.trackid)
+FROM chinook.tracks) AS FLOAT)* 100 AS Persentage
+FROM chinook.genres gen
+JOIN chinook.tracks tracks
+ON gen.genreid=tracks.genreid
+GROUP BY gen.name
+ORDER BY Persentage desc
+;
+
