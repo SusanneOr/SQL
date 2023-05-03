@@ -1,4 +1,4 @@
-In this project I used a dataset which represents a digital media store. The dataset includes tables for customers, artists, albums, media tracks and invoices.
+---In this project I used a dataset which represents a digital media store. The dataset includes tables for customers, artists, albums, media tracks and invoices.
 
 
 --Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country--
@@ -153,5 +153,51 @@ JOIN chinook.tracks tracks
 ON gen.genreid=tracks.genreid
 GROUP BY gen.name
 ORDER BY Persentage desc
+;
+
+-- Find the top 10 customers by the number of invoices --
+
+SELECT cus.CustomerId,
+cus.FirstName || ' ' || cus.LastName AS CustomerName, COUNT(Distinct inv.InvoiceId) AS number_of_Invoices
+FROM chinook.customers cus
+JOIN chinook.invoices inv
+ON cus.CustomerId=inv.CustomerId
+GROUP BY cus.CustomerId
+ORDER BY number_of_Invoices desc
+LIMIT 10;
+
+-- Find the most popular artist by the number of tracks sold --
+
+SELECT art.ArtistId, art.Name AS Artist_name, COUNT(DISTINCT invi.TrackId) AS number_tracks_sold
+FROM chinook.artists art
+JOIN chinook.albums alb
+ON art.ArtistId=alb.ArtistId
+JOIN chinook.tracks tra
+ON alb.AlbumId=tra.AlbumId
+JOIN chinook.invoice_items invi
+ON tra.TrackId=invi.TrackId
+GROUP BY art.name
+ORDER BY number_tracks_sold desc
+LIMIT 1
+;
+
+-- Find the average revenue per customer by country --
+
+SELECT cus.Country, AVG(inv.Total) AS avg_total
+FROM chinook.customers cus
+JOIN chinook.invoices inv
+ON cus.CustomerID=inv.CustomerID
+GROUP BY cus.Country
+;
+
+-- Find the customers who have spent the most money overall --
+
+SELECT cus.CustomerId, cus.FirstName || ' ' || cus.LastName AS CustomerName, SUM(inv.Total) AS Total_spent
+FROM chinook.customers cus
+JOIN chinook.invoices inv
+ON cus.CustomerID=inv.CustomerID
+GROUP BY cus.CustomerId
+ORDER BY Total_spent desc
+LIMIT 1
 ;
 
